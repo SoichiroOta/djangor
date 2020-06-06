@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="row">
+    <div class="col-sm-12">
+    <form action="{% url 'entries:create' %}" method=post class=add-entry>
+        {% csrf_token %}
+        {{ form }}
+        <input type=submit value=Share>
+    </form>
+        
+          <ul class=entries>
+          {% for entry in objects %}
+            <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+          {% empty %}
+            <li><em>Unbelievable.  No entries here so far</em>
+          {% endfor %}
+          </ul>
+    </div>
+  </div>
+
+</div>
+{% endblock content %}
