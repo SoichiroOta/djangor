@@ -1,14 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, RedirectView, UpdateView
+from django.views import generic
 
 User = get_user_model()
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(LoginRequiredMixin, generic.DetailView):
 
     model = User
     slug_field = "username"
@@ -18,7 +19,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 user_detail_view = UserDetailView.as_view()
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     model = User
     fields = ["name"]
@@ -39,7 +40,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 user_update_view = UserUpdateView.as_view()
 
 
-class UserRedirectView(LoginRequiredMixin, RedirectView):
+class UserRedirectView(LoginRequiredMixin, generic.RedirectView):
 
     permanent = False
 
@@ -48,3 +49,15 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 user_redirect_view = UserRedirectView.as_view()
+
+
+class UserListView(LoginRequiredMixin, generic.ListView):
+    def get(self, request, *args, **kwargs):
+        return render(
+            request,
+            'users/user_list.html',
+            {'users': User.objects.all()}
+        )
+
+
+user_list_view = UserListView.as_view()
